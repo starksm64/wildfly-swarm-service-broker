@@ -1,0 +1,14 @@
+{
+  "$id": "http://wildfly-swarm.io/org.wildfly.swarm.osbapi.tokenservice.JWTService.ServiceInstance",
+  "type": "object",
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "properties": {
+    "domain": {
+      "$id": "/properties/domain",
+      "type": "string",
+      "title": "The JWT Domain",
+      "description": "The domain of the JWT signing certificate issuer."
+    }
+  }
+}

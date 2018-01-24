@@ -1,0 +1,18 @@
+{
+  "$id": "http://wildfly-swarm.io/org.wildfly.swarm.osbapi.tokenservice.JWTService.ServiceBinding",
+  "type": "object",
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "properties": {
+    "domain": {
+      "$id": "/properties/domain",
+      "type": "string",
+      "description": "The domain of the JWT signing certificate issuer."
+    },
+    "ttl": {
+      "$id": "/properties/ttl",
+      "type": "integer",
+      "description": "The number of seconds to set the JWT exp claim."
+    }
+  }
+}
