@@ -81,14 +81,14 @@ objects:
             httpGet:
               path: /health
               port: 1338
-              scheme: HTTPS
+              scheme: HTTP
             initialDelaySeconds: 15
             timeoutSeconds: 1
           livenessProbe:
             httpGet:
               port: 1338
               path: /health
-              scheme: HTTPS
+              scheme: HTTP
             initialDelaySeconds: 15
             timeoutSeconds: 1
         volumes:
@@ -126,7 +126,7 @@ objects:
   metadata:
     name: jwt-service-broker
   spec:
-    url: https://jwt-sb.jwt-service-broker.svc:1338/jwt-service-broker/
+    url: http://jwt-sb.jwt-service-broker.svc:1338/jwt-service-broker/
     insecureSkipTLSVerify: true
 
 parameters:
