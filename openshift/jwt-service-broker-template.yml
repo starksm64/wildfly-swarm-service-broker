@@ -1,0 +1,141 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: jwt-service-broker
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: jwt-sb
+    labels:
+      app: jwt-service-broker
+      service: jwt-sb
+    annotations:
+      service.alpha.openshift.io/serving-cert-secret-name: jwt-sb-tls
+  spec:
+    ports:
+      - name: port-1338
+        port: 1338
+        targetPort: 1338
+        protocol: TCP
+    selector:
+      app: jwt-service-broker
+      service: jwt-sb
+
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: jwt-sb
+    namespace: jwt-service-broker
+
+- apiVersion: rbac.authorization.k8s.io/v1beta1
+  kind: ClusterRoleBinding
+  metadata:
+    name: jwt-sb
+  roleRef:
+    name: admin
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+  subjects:
+  - kind: ServiceAccount
+    name: jwt-sb
+    namespace: jwt-service-broker
+
+# Deployment
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: jwt-sb
+    labels:
+      app: jwt-service-broker
+      service: jwt-sb
+  spec:
+    replicas: 1
+    selector:
+      app: jwt-service-broker
+    strategy:
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: jwt-service-broker
+          service: jwt-sb
+      spec:
+        serviceAccount: jwt-sb
+        containers:
+        - image: example/jwt-service-broker:latest
+          name: jwt-sb
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: jwt-sb-auth-volume
+              mountPath: /var/run/jwt-sb-auth
+          ports:
+            - containerPort: 1338
+              protocol: TCP
+          env:
+          - name: JAVA_OPTIONS
+            value: -Xms128m -Xmx256m -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dswarm.http.port=1338 -Djava.net.preferIPv4Stack=true -Djava.security.egd=file:///dev/./urandom
+          resources: {}
+          terminationMessagePath: /tmp/termination-log
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 1338
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              port: 1338
+              path: /health
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+        volumes:
+          - name: jwt-sb-auth-volume
+            secret:
+              secretName: jwt-sb-auth-secret
+
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: jwt-sb-1338
+    labels:
+      app: jwt-service-broker
+      service: jwt-sb
+  spec:
+    to:
+      kind: Service
+      name: jwt-sb
+    port:
+      targetPort: port-1338
+    tls:
+      termination: reencrypt
+
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: jwt-sb-auth-secret
+    namespace: jwt-service-broker
+  data:
+    username: ${BROKER_USER}
+    password: ${BROKER_PASS}
+
+- apiVersion: servicecatalog.k8s.io/v1beta1
+  kind: ClusterServiceBroker
+  metadata:
+    name: jwt-service-broker
+  spec:
+    url: https://jwt-sb.jwt-service-broker.svc:1338/jwt-service-broker/
+    insecureSkipTLSVerify: true
+
+parameters:
+- description: Broker user password
+  displayname: Broker user password
+  name: BROKER_PASS
+  value: and0Cg==
+
+- description: Broker user name
+  displayname: Broker user name
+  name: BROKER_USER
+  value: and0Cg==
