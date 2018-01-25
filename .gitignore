@@ -3,5 +3,6 @@
 *.iws
 .idea
 
+*.log
 target
 
