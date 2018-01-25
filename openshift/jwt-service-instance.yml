@@ -1,0 +1,11 @@
+# A provisioned instance of the jwt-service ClusterServiceClass
+# Still trying to figure what is correct here
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceInstance
+metadata:
+  name: jwt-service
+spec:
+  clusterServiceClassExternalName: jwt-service
+  clusterServicePlanExternalName: free-base-plan
+  parameters:
+    domain: "example.com"
