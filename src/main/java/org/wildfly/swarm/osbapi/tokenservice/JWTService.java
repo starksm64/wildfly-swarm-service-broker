@@ -34,6 +34,9 @@ import org.wildfly.swarm.osbapi.model.Service;
 import org.wildfly.swarm.osbapi.model.ServiceBinding;
 import org.wildfly.swarm.osbapi.model.ServiceInstance;
 
+/**
+ * A JWTService broker example
+ */
 @ApplicationScoped
 public class JWTService extends AbstractServiceBroker {
     private static final String BINDING_SCHEMA_PATH = "/json/jwt-service-binding-schema.json";
@@ -44,21 +47,25 @@ public class JWTService extends AbstractServiceBroker {
     private JWTServiceInstance instance;
 
     /**
+     * Lists the supported service instances. Currently there is only one that is configured in {@link #init()}.
+     *
+     * @see #init()
      *
      * @param securityContex
      * @return The catalog for the JWTService
      */
     protected Catalog doGetCatalog(SecurityContext securityContex) {
+        log.info("doGetCatalog");
         Catalog catalog = new Catalog();
         if(tokenService == null) {
             init();
         }
-
         catalog.getServices().add(tokenService);
         return catalog;
     }
 
     protected LastOperationResponse doGetLastOperationStatus(SecurityContext securityContext, String instanceId, String serviceId, String planId, String operation) throws Exception {
+        log.infof("doGetLastOperationStatus, lastOpError=%s", lastOpError);
         LastOperationResponse response;
         if(lastOpError != null) {
             response = new LastOperationResponse(LastOperationState.FAILED, lastOpError.getMessage());
@@ -69,6 +76,7 @@ public class JWTService extends AbstractServiceBroker {
     }
 
     protected Response doProvisionService(SecurityContext securityContext, String instanceId, boolean acceptsIncomplete, ProvisionRequest request) throws Exception {
+        log.infof("doProvisionService, instanceId=%s, request=%s", instanceId, request);
         Optional<String> optDomain = request.getParameter("domain");
         if(!optDomain.isPresent()) {
             log.error("No domain parameter specified");
@@ -86,11 +94,12 @@ public class JWTService extends AbstractServiceBroker {
      * @param securityContext
      * @param instanceId
      * @param bindingId
-     * @param bindRequest
+     * @param request
      * @return
      */
-    protected Response doBindServiceInstance(SecurityContext securityContext, String instanceId, String bindingId, BindRequest bindRequest) {
-        Optional<Integer> ttlOpt = bindRequest.getParameter("ttl");
+    protected Response doBindServiceInstance(SecurityContext securityContext, String instanceId, String bindingId, BindRequest request) {
+        log.infof("doBindServiceInstance, instanceId=%s, request=%s", instanceId, request);
+        Optional<Integer> ttlOpt = request.getParameter("ttl");
         Integer ttl = ttlOpt.orElse(30);
         instance.setTtl(ttl);
         Response response;
@@ -130,6 +139,10 @@ public class JWTService extends AbstractServiceBroker {
         KeyPair keyPair = keyPairGenerator.genKeyPair();
         return keyPair;
     }
+
+    /**
+     * Initialize the tokenService information needed for the catalog.
+     */
     private synchronized void init() {
         // Base free service
         tokenService = new Service();

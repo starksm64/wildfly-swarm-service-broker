@@ -71,4 +71,15 @@ public class ProvisionRequest {
     public void putParameter(String name, String value) {
         parameters.put(name, value);
     }
+
+    @Override
+    public String toString() {
+        return "ProvisionRequest{" +
+                "organizationId='" + organizationId + '\'' +
+                ", spaceId='" + spaceId + '\'' +
+                ", serviceId=" + serviceId +
+                ", planId=" + planId +
+                ", parameters=" + parameters +
+                '}';
+    }
 }

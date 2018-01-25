@@ -55,6 +55,16 @@ public class BindRequest {
         return Optional.ofNullable(param);
     }
 
+    @Override
+    public String toString() {
+        return "BindRequest{" +
+                "serviceId=" + serviceId +
+                ", planId=" + planId +
+                ", bindResource=" + bindResource +
+                ", parameters=" + parameters +
+                '}';
+    }
+
     public static class BindResource {
         private String appId;
         private String route;
@@ -78,6 +88,14 @@ public class BindRequest {
 
         public void setRoute(String route) {
             this.route = route;
+        }
+
+        @Override
+        public String toString() {
+            return "BindResource{" +
+                    "appId='" + appId + '\'' +
+                    ", route='" + route + '\'' +
+                    '}';
         }
     }
 
