@@ -20,6 +20,9 @@ import org.wildfly.swarm.osbapi.model.LastOperationResponse;
 import org.wildfly.swarm.osbapi.model.ProvisionRequest;
 import org.wildfly.swarm.osbapi.model.ProvisionResponse;
 
+/**
+ * A base abstract class that implements the Open Service Broker API REST endpoints
+ */
 @Path("/v2")
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})

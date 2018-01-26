@@ -2,6 +2,9 @@ package org.wildfly.swarm.osbapi.tokenservice;
 
 import java.util.Map;
 
+/**
+ * An example service instance that is provisioned and bound by the service broker (JWTService)
+ */
 public class JWTServiceInstance {
     private String id;
     private String domain;

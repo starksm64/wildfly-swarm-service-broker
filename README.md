@@ -1,5 +1,7 @@
 # wildfly-swarm-service-broker
-Open Service Broker API framework for Wildfly Swarm
+This is an example project of implenting the Open Service Broker API(OSBAPI) framework for Wildfly Swarm.
+It consists of an abstract JAX-RS base class that implements the OSBAPI endpoints along with an example
+concrete JWTService implementation that manages JWTServiceInstance(s).
 
 # Minishift setup
 Either perform:

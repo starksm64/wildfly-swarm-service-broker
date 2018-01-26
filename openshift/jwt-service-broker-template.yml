@@ -1,3 +1,5 @@
+# A template for deployment of the JWT ServiceBroker. This is a slimmed down version
+# of the ansible service broker template
 apiVersion: v1
 kind: Template
 metadata:
@@ -41,7 +43,7 @@ objects:
     name: jwt-sb
     namespace: jwt-service-broker
 
-# Deployment
+# Deployment of the WildflySwarm fatjar
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -121,11 +123,13 @@ objects:
     username: ${BROKER_USER}
     password: ${BROKER_PASS}
 
+# This registers the ServiceBroker
 - apiVersion: servicecatalog.k8s.io/v1beta1
   kind: ClusterServiceBroker
   metadata:
     name: jwt-service-broker
   spec:
+    # This is the URL of the endpoint that implements the OSBAPI REST interface
     url: http://jwt-sb.jwt-service-broker.svc:1338/
     insecureSkipTLSVerify: true
 
