@@ -7,6 +7,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -116,7 +117,7 @@ public class JWTService extends AbstractServiceBroker {
             response = Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
             log.errorf(e, "Failed to bind service, domain=%s", instance.getDomain());
         }
-        log.infof("Boound JWTServiceInstance, domain=%s", instance.getDomain());
+        log.infof("Bound JWTServiceInstance, domain=%s", instance.getDomain());
         return response;
     }
 
@@ -149,11 +150,19 @@ public class JWTService extends AbstractServiceBroker {
         tokenService.setBindable(true);
         tokenService.setDescription("A JWT token generator service");
         tokenService.setId(UUID.randomUUID().toString());
-        tokenService.setName("JWT Token Service");
+        tokenService.setName("jwt-token-service");
         tokenService.setTags(Collections.singletonList("JWT"));
         tokenService.setRequires(Collections.singletonList("volume_mount"));
         tokenService.setPlanUpdateable(false);
-        //tokenService.setMetadata();
+        // The metadata used by the console view of the catalog
+        HashMap<String, String> metadata = new HashMap<>();
+        metadata.put("displayName", "JWT TokenService");
+        metadata.put("documentationUrl", "https://github.com/starksm64/wildfly-swarm-service-broker");
+        metadata.put("longDescription", "The JWT TokenService ");
+        metadata.put("providerDisplayName", "Red Hat, Inc.");
+        metadata.put("supportUrl", "http://wildfly-swarm.io/");
+        metadata.put("imageUrl", "https://avatars0.githubusercontent.com/u/7501379?s=200&v=4");
+        tokenService.setMetadata(metadata);
         Plan basePlan = new Plan();
         basePlan.setId(UUID.randomUUID().toString());
         basePlan.setFree(true);
