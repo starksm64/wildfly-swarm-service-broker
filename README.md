@@ -51,6 +51,35 @@ secret "jwt-sb-auth-secret" created
 clusterservicebroker "jwt-service-broker" created
 ```
 
+# Check the clusterservicebrokers and clusterserviceclasses
+To verify that the service broker was registered:
+```bash
+[wildfly-swarm-service-broker 1288]$  oc get clusterservicebrokers
+NAME                      AGE
+jwt-service-broker        41s
+template-service-broker   4h
+```
+
+To verify that the jwt-service-broker catalog was read:
+```bash
+[wildfly-swarm-service-broker 1333]$ oc get clusterserviceclasses --all-namespaces -o custom-columns=NAME:.metadata.name,DISPLAYNAME:spec.externalMetadata.displayName
+NAME                                   DISPLAYNAME
+38e57637-7701-4e3e-bd01-a9690130bffa   JWT TokenService 
+e34630c7-0255-11e8-8c1c-1213db363b8d   Jenkins
+e34cf908-0255-11e8-8c1c-1213db363b8d   Pipeline Build Example
+e3536afa-0255-11e8-8c1c-1213db363b8d   MongoDB
+e3589dbe-0255-11e8-8c1c-1213db363b8d   MariaDB
+e35bd30f-0255-11e8-8c1c-1213db363b8d   MySQL
+e3603594-0255-11e8-8c1c-1213db363b8d   PostgreSQL
+e365fdf7-0255-11e8-8c1c-1213db363b8d   CakePHP + MySQL
+e374b6d8-0255-11e8-8c1c-1213db363b8d   Django + PostgreSQL
+e37abe8a-0255-11e8-8c1c-1213db363b8d   Dancer + MySQL
+e37f0186-0255-11e8-8c1c-1213db363b8d   Node.js + MongoDB
+e3831ee8-0255-11e8-8c1c-1213db363b8d   Rails + PostgreSQL
+e387ca8f-0255-11e8-8c1c-1213db363b8d   Jenkins (Ephemeral)
+```
+
+
 # Clean up
 oc delete route jwt-sb-1338
 oc delete deploymentconfig jwt-sb
@@ -67,3 +96,7 @@ oc delete clusterservicebrokers jwt-service-broker
 
 # TODO
 * Update template to support the use of https
+
+# Debug
+
+MINISHIFT_ENABLE_EXPERIMENTAL=y minishift start --service-catalog --show-libmachine-logs -v5
