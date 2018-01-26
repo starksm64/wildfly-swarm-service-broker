@@ -51,7 +51,6 @@ public abstract class AbstractServiceBroker {
                                        @QueryParam("accepts_incomplete") @DefaultValue("false") boolean acceptsIncomplete,
                                        ProvisionRequest request) throws Exception {
         Response response = doProvisionService(securityContext, instanceId, acceptsIncomplete, request);
-        Response.status(Response.Status.BAD_REQUEST).build();
         return response;
     }
 
