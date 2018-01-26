@@ -126,7 +126,7 @@ objects:
   metadata:
     name: jwt-service-broker
   spec:
-    url: http://jwt-sb.jwt-service-broker.svc:1338/jwt-service-broker/
+    url: http://jwt-sb.jwt-service-broker.svc:1338/
     insecureSkipTLSVerify: true
 
 parameters:
