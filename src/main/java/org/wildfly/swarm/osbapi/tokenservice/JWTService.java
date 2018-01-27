@@ -19,6 +19,7 @@ import javax.ws.rs.core.SecurityContext;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jdk.nashorn.internal.ir.ObjectNode;
 import org.jboss.logging.Logger;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.wildfly.swarm.osbapi.api.AbstractServiceBroker;
@@ -81,7 +82,8 @@ public class JWTService extends AbstractServiceBroker {
         Optional<String> optDomain = request.getParameter("domain");
         if(!optDomain.isPresent()) {
             log.error("No domain parameter specified");
-            return Response.status(Response.Status.BAD_REQUEST).entity("Missing domain paramter").build();
+            String json = "{\"description\": \"Missing domain parameter\"}";
+            return Response.status(Response.Status.BAD_REQUEST).entity(json).build();
         }
         instance = new JWTServiceInstance(instanceId, optDomain.get());
         ProvisionResponse response = new ProvisionResponse();
@@ -102,7 +104,8 @@ public class JWTService extends AbstractServiceBroker {
         log.infof("doBindServiceInstance, instanceId=%s, request=%s", instanceId, request);
         Response response;
         if(instance == null) {
-            response = Response.status(Response.Status.BAD_REQUEST).entity("No instance exists, use provision first").build();
+            String json = "{\"description\": \"No instance exists, use provision first\"}";
+            response = Response.status(Response.Status.BAD_REQUEST).entity(json).build();
             return response;
         }
         Optional<Integer> ttlOpt = request.getParameter("ttl");
@@ -118,7 +121,8 @@ public class JWTService extends AbstractServiceBroker {
             BindResponse bindResponse = new BindResponse(jwkObj);
             response = Response.ok(bindResponse).build();
         } catch (Exception e) {
-            response = Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            String json = "{\"description\": \""+e.getMessage()+"\"}";
+            response = Response.status(Response.Status.BAD_REQUEST).entity(json).build();
             log.errorf(e, "Failed to bind service, domain=%s", instance.getDomain());
         }
         log.infof("Bound JWTServiceInstance, domain=%s", instance.getDomain());
