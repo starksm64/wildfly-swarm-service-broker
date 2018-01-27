@@ -1,6 +1,7 @@
 package org.wildfly.swarm.osbapi.api;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -56,6 +57,11 @@ public abstract class AbstractServiceBroker {
         Response response = doProvisionService(securityContext, instanceId, acceptsIncomplete, request);
         return response;
     }
+    @DELETE
+    public Response deprovisionService(@Context SecurityContext securityContext, @PathParam("instanceId") String instanceId, @QueryParam("service_id") String serviceId, @QueryParam("plan_id") String planId) {
+        Response response = doDeprovisionService(securityContext, instanceId, serviceId, planId);
+        return response;
+    }
 
     @Path("/service_instances/{instanceId}/service_bindings/{bindingId}")
     @PUT
@@ -63,6 +69,12 @@ public abstract class AbstractServiceBroker {
                                             @PathParam("instanceId") String instanceId,
                                      @PathParam("bindingId") String bindingId, BindRequest bindRequest) {
         Response response = doBindServiceInstance(securityContext, instanceId, bindingId, bindRequest);
+        return response;
+    }
+
+    @DELETE
+    public Response unbindServiceInstance(@Context SecurityContext securityContext, @PathParam("instanceId") String instanceId, @PathParam("bindingId") String bindingId) {
+        Response response = doUnbindServiceInstance(securityContext, instanceId, bindingId);
         return response;
     }
 
@@ -76,6 +88,9 @@ public abstract class AbstractServiceBroker {
                                                              String instanceId,
                                                              boolean acceptsIncomplete,
                                                              ProvisionRequest request) throws Exception;
+    protected abstract Response doDeprovisionService(SecurityContext securityContext, String instanceId, String serviceId,  String planId);
     protected abstract Response doBindServiceInstance(SecurityContext securityContext, String instanceId,
                                                           String bindingId, BindRequest bindRequest);
+
+    protected abstract Response doUnbindServiceInstance(SecurityContext securityContext, String instanceId, String bindingId);
 }

@@ -125,6 +125,19 @@ public class JWTService extends AbstractServiceBroker {
         return response;
     }
 
+    @Override
+    protected Response doDeprovisionService(SecurityContext securityContext, String instanceId, String serviceId, String planId) {
+        log.infof("doDeprovisionService, instanceId=%s, planId=%s", instanceId, planId);
+        Response response = Response.ok().build();
+        return response;
+    }
+
+    protected Response doUnbindServiceInstance(SecurityContext securityContext, String instanceId, String bindingId) {
+        log.infof("doUnbindServiceInstance, instanceId=%s, bindingId=%s", instanceId, bindingId);
+        Response response = Response.ok().build();
+        return response;
+    }
+
     @Path("/jwt/generate/{serviceId}")
     @GET
     public Response generateToken() {
