@@ -5,13 +5,21 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 public class ProvisionRequest {
 
+    @JsonProperty("organization_guid")
     private String organizationId;
+    @JsonProperty("space_guid")
     private String spaceId;
+    @JsonProperty("service_id")
     private UUID serviceId;
+    @JsonProperty("plan_id")
     private UUID planId;
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<String, Object> parameters = new HashMap<>();
+    private ObjectNode context;
 
     public ProvisionRequest() {
     }
@@ -55,11 +63,11 @@ public class ProvisionRequest {
         this.planId = planId;
     }
 
-    public Map<String, String> getParameters() {
+    public Map<String, Object> getParameters() {
         return parameters;
     }
 
-    public void setParameters(Map<String, String> parameters) {
+    public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
     }
 
@@ -72,6 +80,14 @@ public class ProvisionRequest {
         parameters.put(name, value);
     }
 
+    public ObjectNode getContext() {
+        return context;
+    }
+
+    public void setContext(ObjectNode context) {
+        this.context = context;
+    }
+
     @Override
     public String toString() {
         return "ProvisionRequest{" +
@@ -80,6 +96,7 @@ public class ProvisionRequest {
                 ", serviceId=" + serviceId +
                 ", planId=" + planId +
                 ", parameters=" + parameters +
+                ", context=" + context +
                 '}';
     }
 }

@@ -6,12 +6,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 public class BindRequest {
 
+    @JsonProperty("service_id")
     private UUID serviceId;
+    @JsonProperty("plan_id")
     private UUID planId;
+    @JsonProperty("bind_resource")
     private BindResource bindResource;
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<String, Object> parameters = new HashMap<>();
+    private ObjectNode context;
+
+    public BindRequest() {
+
+    }
 
     public BindRequest(UUID serviceId, UUID planId) {
         this.serviceId = serviceId;
@@ -42,17 +53,25 @@ public class BindRequest {
         this.bindResource = bindResource;
     }
 
-    public Map<String, String> getParameters() {
+    public Map<String, Object> getParameters() {
         return parameters;
     }
 
-    public void setParameters(Map<String, String> parameters) {
+    public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
     }
 
     public <T> Optional<T> getParameter(String name) {
         T param = (T) parameters.get(name);
         return Optional.ofNullable(param);
+    }
+
+    public ObjectNode getContext() {
+        return context;
+    }
+
+    public void setContext(ObjectNode context) {
+        this.context = context;
     }
 
     @Override
@@ -66,9 +85,12 @@ public class BindRequest {
     }
 
     public static class BindResource {
+        @JsonProperty("app_guid")
         private String appId;
         private String route;
 
+        public BindResource() {
+        }
         public BindResource(String appId, String route) {
             this.appId = appId;
             this.route = route;

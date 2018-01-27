@@ -100,10 +100,14 @@ public class JWTService extends AbstractServiceBroker {
      */
     protected Response doBindServiceInstance(SecurityContext securityContext, String instanceId, String bindingId, BindRequest request) {
         log.infof("doBindServiceInstance, instanceId=%s, request=%s", instanceId, request);
+        Response response;
+        if(instance == null) {
+            response = Response.status(Response.Status.BAD_REQUEST).entity("No instance exists, use provision first").build();
+            return response;
+        }
         Optional<Integer> ttlOpt = request.getParameter("ttl");
         Integer ttl = ttlOpt.orElse(30);
         instance.setTtl(ttl);
-        Response response;
         try {
             KeyPair instanceKey = generateKeyPair(2048);
             RSAPublicKey publicKey = (RSAPublicKey) instanceKey.getPublic();
