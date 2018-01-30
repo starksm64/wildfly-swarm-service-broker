@@ -1,6 +1,8 @@
 
 package org.wildfly.swarm.osbapi.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +16,12 @@ public class Service {
 
     private String id;
     private Boolean bindable;
+    @JsonProperty("dashboard_client")
     private DashboardClient dashboardClient;
     private String description;
     private Map<String, String> metadata = new HashMap<>();
     private String name;
+    @JsonProperty("plan_updateable")
     private Boolean planUpdateable;
     private List<Plan> plans = new ArrayList<>();
     private List<String> requires = new ArrayList<>();

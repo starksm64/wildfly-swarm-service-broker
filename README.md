@@ -19,30 +19,31 @@ minishift addon enable admin-user
 or run the `openshift/setup-minishift.sh` script
 
 # Start minishift with the service-catalog
-MINISHIFT_ENABLE_EXPERIMENTAL=y minishift start --service-catalog
+`MINISHIFT_ENABLE_EXPERIMENTAL=y minishift start --service-catalog`
 
 # Configure command line environment
+```bash
 eval $(minishift oc-env)
 eval $(minishift docker-env)
 oc login $(minishift ip):8443 -u admin -p admin
 oc whoami
+```
 
 # Launch console app
-minishift console
+`minishift console`
 
 # Create a new project
-oc new-project jwt-service-broker
+`oc new-project jwt-service-broker`
 
 # Service broker deployment
+```bash
 mvn clean package
-
 docker build -f openshift/Dockerfile -t example/jwt-service-broker .
-
 docker images | grep jwt-service-broker
-
 oc process -f openshift/jwt-service-broker-template.yml --param-file=openshift/params.env | oc create -f -
+```
 
-output should be something like:
+output for the `oc process` should be something like:
 ```bash
 service "jwt-sb" created
 serviceaccount "jwt-sb" created
@@ -62,7 +63,7 @@ jwt-service-broker        41s
 template-service-broker   4h
 ```
 
-To verify that the jwt-service-broker catalog was read:
+To verify that the jwt-service-broker catalog was read, issue the following:
 ```bash
 [wildfly-swarm-service-broker 1333]$ oc get clusterserviceclasses --all-namespaces -o custom-columns=NAME:.metadata.name,DISPLAYNAME:spec.externalMetadata.displayName
 NAME                                   DISPLAYNAME
@@ -80,21 +81,24 @@ e37f0186-0255-11e8-8c1c-1213db363b8d   Node.js + MongoDB
 e3831ee8-0255-11e8-8c1c-1213db363b8d   Rails + PostgreSQL
 e387ca8f-0255-11e8-8c1c-1213db363b8d   Jenkins (Ephemeral)
 ```
-
+_Note: it can take a couple of minutes for the JWT TokenService entry to show up._
 
 # Clean up
+```bash
 oc delete route jwt-sb-1338
 oc delete deploymentconfig jwt-sb
 oc delete service jwt-sb
 oc delete serviceaccount jwt-sb
 oc delete clusterrolebindings.rbac.authorization.k8s.io jwt-sb
 oc delete clusterservicebrokers jwt-service-broker
+```
 
 or
-
+```bash
 oc delete project jwt-service-broker
 oc delete clusterrolebindings.rbac.authorization.k8s.io jwt-sb
 oc delete clusterservicebrokers jwt-service-broker
+```
 
 # TODO
 * Update template to support the use of https
